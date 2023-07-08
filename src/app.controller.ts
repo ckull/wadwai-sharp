@@ -7,6 +7,7 @@ import { rgb2cmyk } from './utils';
 import * as gm from 'gm'
 import { buffer } from 'stream/consumers';
 import { error } from 'console';
+import * as fs from 'fs'
 
 @Controller()
 export class AppController {
@@ -35,37 +36,59 @@ export class AppController {
     }
   }
 
-  // @ts-ignore
-  // @Post('/process')
-  // @UseInterceptors(FileInterceptor('file'))
-  // public async process(
-  //   @UploadedFile() file: Express.Multer.File,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const profilePath = 'USWebCoatedSWOP.icc'
+  //@ts-ignore
+  @Post('/process')
+  @UseInterceptors(FileInterceptor('file'))
+  public async process(
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    try {
+      
 
-  //     gm.subClass({ imageMagick: true });
+      const image = await sharp(file.buffer)
+      // .png()
+      .toFormat('png')
+      .withMetadata({
+        icc: './USWebCoatedSWOP.icc'
+      })
+     
+      .toBuffer()
 
-  //     gm(file.buffer)
-  //     .profile(profilePath)
-  //     .toBuffer('JPEG', (err, imageBuffer) => {
-  //       if(err) {
-  //         throw new Error(err)
-  //       }
+      console.log('img: ', image)
 
-  //       console.log('imageBuffer: ', imageBuffer)
-  //       const base64Image = imageBuffer.toString('base64')
+      res.setHeader('Content-Type', 'image/png'); // Replace 'image/jpeg' with the correct content type for your image
 
-  //       const dataURL = `data:image/png;base64,${base64Image}`;
-  //        res.setHeader('Content-Type', 'application/json');
-  //        res.end(JSON.stringify({dataURL}));
-  //     })
+      // Send the buffer as the response
+      res.end(image);
+ 
+      // const img = gm(file.buffer)
+      // .profile(profilePath).toBuffer('png', (err, buffer) => {
+      //   if(err) {
+      //     console.error('err: ', err)
+      //   }
+
+      //   console.log('done: ', buffer)
+      // })
+
+
+      // console.log('img: ', img)
+      // .toBuffer('png', (err, imageBuffer) => {
+      //   if(err) {
+      //     throw new Error(err)
+      //   }
+
+      //   console.log('imageBuffer: ', imageBuffer)
+      //   const base64Image = imageBuffer.toString('base64')
+
+      //   const dataURL = `data:image/png;base64,${base64Image}`;
+      //    res.setHeader('Content-Type', 'application/json');
+      //    res.end(JSON.stringify({dataURL}));
+      // })
 
     
-  //   } catch (error) {
-  //     console.error('Error extracting metadata:', error);
-  //     throw new Error('Failed to extract metadata');
-  //   }
-  // }
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
