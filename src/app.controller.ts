@@ -28,7 +28,6 @@ export class AppController {
 
       const metadata = await sharp(file.buffer).metadata();
 
-      console.log('metadata: ', metadata)
       return metadata;
     } catch (error) {
       console.error('Error extracting metadata:', error);
@@ -44,48 +43,19 @@ export class AppController {
     @Res() res: Response,
   ) {
     try {
-      
 
       const image = await sharp(file.buffer)
-      // .png()
-      .toFormat('png')
+      .toFormat('jpg')
       .withMetadata({
-        icc: './USWebCoatedSWOP.icc'
+        icc: 'USWebCoatedSWOP.icc'
       })
-     
       .toBuffer()
 
-      console.log('img: ', image)
 
-      res.setHeader('Content-Type', 'image/png'); // Replace 'image/jpeg' with the correct content type for your image
+      res.setHeader('Content-Type', 'image/png'); 
 
-      // Send the buffer as the response
       res.end(image);
  
-      // const img = gm(file.buffer)
-      // .profile(profilePath).toBuffer('png', (err, buffer) => {
-      //   if(err) {
-      //     console.error('err: ', err)
-      //   }
-
-      //   console.log('done: ', buffer)
-      // })
-
-
-      // console.log('img: ', img)
-      // .toBuffer('png', (err, imageBuffer) => {
-      //   if(err) {
-      //     throw new Error(err)
-      //   }
-
-      //   console.log('imageBuffer: ', imageBuffer)
-      //   const base64Image = imageBuffer.toString('base64')
-
-      //   const dataURL = `data:image/png;base64,${base64Image}`;
-      //    res.setHeader('Content-Type', 'application/json');
-      //    res.end(JSON.stringify({dataURL}));
-      // })
-
     
     } catch (error) {
       throw new Error(error);
