@@ -1,13 +1,20 @@
-import { Controller, Get, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import * as sharp from 'sharp'
+import * as sharp from 'sharp';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response, response } from 'express';
 import { rgb2cmyk } from './utils';
-import * as gm from 'gm'
+import * as gm from 'gm';
 import { buffer } from 'stream/consumers';
 import { error } from 'console';
-import * as fs from 'fs'
+import * as fs from 'fs';
 
 @Controller()
 export class AppController {
@@ -20,9 +27,7 @@ export class AppController {
 
   @Post('/metadata')
   @UseInterceptors(FileInterceptor('file'))
-  public async metadata(
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  public async metadata(@UploadedFile() file: Express.Multer.File) {
     try {
       console.log(file);
 
@@ -43,20 +48,16 @@ export class AppController {
     @Res() res: Response,
   ) {
     try {
-
       const image = await sharp(file.buffer)
-      .toFormat('jpg')
-      .withMetadata({
-        icc: 'USWebCoatedSWOP.icc'
-      })
-      .toBuffer()
+        .toFormat('jpg')
+        .withMetadata({
+          icc: './USWebCoatedSWOP.icc',
+        })
+        .toBuffer();
 
-
-      res.setHeader('Content-Type', 'image/png'); 
+      res.setHeader('Content-Type', 'image/png');
 
       res.end(image);
- 
-    
     } catch (error) {
       throw new Error(error);
     }
