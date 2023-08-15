@@ -6,8 +6,15 @@ import { AddressModule } from './modules/address/address.module';
 import { PurchaseModule } from './modules/purchase/purchase.module';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { StripeController } from './modules/stripe/stripe.controller';
+import { ConfigModule } from '@nestjs/config';
 @Module({
-  imports: [PrismaModule, AddressModule, PurchaseModule, StripeModule],
+  imports: [
+    PrismaModule,
+    AddressModule,
+    PurchaseModule,
+    StripeModule,
+    ConfigModule.forRoot(),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
