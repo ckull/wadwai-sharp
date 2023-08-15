@@ -8,7 +8,9 @@ async function bootstrap() {
   app.enableCors();
 
   admin.initializeApp({
-    credential: admin.credential.cert(adminConfig as ServiceAccount),
+    credential: admin.credential.cert(
+      process.env.FIREBASE_ADMIN as ServiceAccount,
+    ),
   });
 
   await app.listen(3001);
