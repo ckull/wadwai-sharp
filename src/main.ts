@@ -5,7 +5,14 @@ import { adminConfig } from 'secret/wadwai-official-firebase-adminsdk-49ow7-a39f
 import { ServiceAccount } from 'firebase-admin';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  // Define CORS options to allow all origins, methods, and headers.
+
+  // Enable CORS using the defined options.
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+    credentials: true,
+  });
 
   admin.initializeApp({
     credential: admin.credential.cert(adminConfig as ServiceAccount),
