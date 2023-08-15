@@ -9,11 +9,11 @@ import { StripeController } from './modules/stripe/stripe.controller';
 import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     PrismaModule,
     AddressModule,
     PurchaseModule,
     StripeModule,
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
